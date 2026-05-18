@@ -2050,7 +2050,7 @@ function tentarLogin() {
       } catch(e) {}
       var u = {};
       try { u = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}'); } catch(e) {}
-      showPage(u.nome ? 'pg-home' : 'pg-cad');
+      showPage(u.nome ? 'pg-home' : 'pg-cadastro');
     } else {
       msg.textContent = 'E-mail não encontrado. Verifique se usou o mesmo e-mail da compra ou entre em contato com o suporte.';
       msg.style.color = '#E05C7A';
