@@ -309,6 +309,23 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 
 
 <!-- CADASTRO PAGE -->
+<!-- PÁGINA DE LOGIN -->
+<div id="pg-login" class="page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;">
+  <div style="text-align:center;margin-bottom:32px;">
+    <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#fff;">Ciclo <em style="color:var(--gold);">Magro</em></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;">Dr. Eduardo Medani · Nutricionista</div>
+  </div>
+  <div style="width:100%;max-width:380px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:20px;padding:28px 24px;">
+    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Acesse seu programa</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Digite o e-mail usado na compra para acessar seu conteúdo personalizado.</div>
+    <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Seu e-mail</div>
+    <input id="login-email" type="email" placeholder="seuemail@gmail.com" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')tentarLogin()">
+    <div id="login-msg" style="font-size:12px;margin-bottom:12px;line-height:1.5;min-height:18px;"></div>
+    <button id="login-btn" onclick="tentarLogin()" style="width:100%;background:var(--gold);color:#0E0D0C;border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Acessar</button>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted);">Não comprou ainda? <a href="#" style="color:var(--gold);text-decoration:none;">Clique aqui</a></div>
+  </div>
+</div>
+
 <div id="pg-cadastro" class="page active">
   <div class="cad-wrap">
     <div class="cad-logo">
@@ -469,6 +486,9 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
   <div class="footer">
     <div class="footer-logo">Ciclo Magro</div>
     <div class="footer-sub">Dr. Eduardo Medani - Nutricionista</div>
+    <button onclick="recalcularCiclo()" style="margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:auto;">
+      🔄 Recalcular meu ciclo
+    </button>
   </div>
 </div>
 
@@ -1940,6 +1960,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var today = new Date().toISOString().split('T')[0];
   var inp = document.getElementById('cad-data');
   if(inp) inp.setAttribute('max', today);
+  checarAcessoInicial();
   checkReturningUser();
 });
 
@@ -1988,6 +2009,62 @@ function atualizarData() {
 }
 
 function fecharModal(){var m=document.getElementById('manip-modal');if(m)m.classList.remove('open');}
+
+function recalcularCiclo() {
+  if (!confirm('Isso vai limpar seus dados do ciclo e você preencherá novamente. Continuar?')) return;
+  try {
+    var saved = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}');
+    var novo = { nome: saved.nome || '', email: saved.email || '', acessoLiberado: saved.acessoLiberado || false };
+    localStorage.setItem('ciclomagro_user', JSON.stringify(novo));
+  } catch(e) {}
+  showPage('pg-cadastro');
+}
+
+// ════════════════════════════════════════════════
+//  SISTEMA DE LOGIN POR E-MAIL
+// ════════════════════════════════════════════════
+function verificarAcesso(email) {
+  return fetch(APPS_SCRIPT_URL + '?action=verificar&email=' + encodeURIComponent(email))
+    .then(function(r) { return r.text(); })
+    .then(function(t) { return t.trim() === 'autorizado'; })
+    .catch(function() { return false; });
+}
+
+function tentarLogin() {
+  var email = (document.getElementById('login-email').value || '').trim().toLowerCase();
+  if (!email) { alert('Digite seu e-mail.'); return; }
+  var btn = document.getElementById('login-btn');
+  var msg = document.getElementById('login-msg');
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+  msg.textContent = '';
+  verificarAcesso(email).then(function(ok) {
+    if (ok) {
+      try {
+        var saved = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}');
+        saved.email = email;
+        saved.acessoLiberado = true;
+        localStorage.setItem('ciclomagro_user', JSON.stringify(saved));
+      } catch(e) {}
+      var u = {};
+      try { u = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}'); } catch(e) {}
+      showPage(u.nome ? 'pg-home' : 'pg-cad');
+    } else {
+      msg.textContent = 'E-mail não encontrado. Verifique se usou o mesmo e-mail da compra ou entre em contato com o suporte.';
+      msg.style.color = '#E05C7A';
+      btn.disabled = false;
+      btn.textContent = 'Acessar';
+    }
+  });
+}
+
+function checarAcessoInicial() {
+  try {
+    var u = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}');
+    if (u.acessoLiberado && u.email) return;
+  } catch(e) {}
+  showPage('pg-login');
+}
 
 // ═══════════════════════════════════════════════════════════════
 //  AJUSTE DE DIETA COM IA
