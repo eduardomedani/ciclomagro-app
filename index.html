@@ -69,6 +69,8 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 .footer-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);margin-bottom:5px;}
 .footer-sub{font-size:10px;color:var(--muted);}
 .page{display:none;padding-top:28px;}
+.page.active{display:block;}
+#pg-login.active{display:flex;}
 .page.active{display:block;animation:fadeUp 0.4s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
@@ -310,7 +312,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 
 <!-- CADASTRO PAGE -->
 <!-- PÁGINA DE LOGIN -->
-<div id="pg-login" class="page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;">
+<div id="pg-login" class="page" style="flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;">
   <div style="text-align:center;margin-bottom:32px;">
     <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#fff;">Ciclo <em style="color:var(--gold);">Magro</em></div>
     <div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;">Dr. Eduardo Medani · Nutricionista</div>
@@ -326,7 +328,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
   </div>
 </div>
 
-<div id="pg-cadastro" class="page active">
+<div id="pg-cadastro" class="page">
   <div class="cad-wrap">
     <div class="cad-logo">
       <div class="cad-logo-title">Ciclo <em>Magro</em></div>
