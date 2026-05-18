@@ -1899,17 +1899,18 @@ function irParaDieta() {
 }
 
 function enviarGoogleSheets(data) {
-  // Google Apps Script Web App URL — to be configured
-  var SHEET_URL = 'GOOGLE_SHEET_URL_PLACEHOLDER';
-  if (SHEET_URL === 'GOOGLE_SHEET_URL_PLACEHOLDER') return;
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfq0_IUEQgDs5OCzi8fbsMcCVxRYr0jE9I9RgAuvvz7hkfNKAJmKPo2RBhVHmLmDw4/exec';
+  console.log('[CicloMagro] Enviando para planilha:', JSON.stringify(data));
   try {
     fetch(SHEET_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
-    }).catch(function(){});
-  } catch(e) {}
+    })
+    .then(function(){ console.log('[CicloMagro] Enviado com sucesso!'); })
+    .catch(function(err){ console.error('[CicloMagro] Erro ao enviar:', err); });
+  } catch(e) { console.error('[CicloMagro] Exceção:', e); }
 }
 
 // On app load — check localStorage for returning user
@@ -2404,7 +2405,7 @@ function diarioClosePanel() {
 //  URL do Google Apps Script (cole aqui após publicar o script)
 //  Deploy > New deployment > Web app > Execute as: Me > Anyone
 // ─────────────────────────────────────────────────────────────
-var APPS_SCRIPT_URL = ''; // ex: 'https://script.google.com/macros/s/XXXXXXX/exec'
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfq0_IUEQgDs5OCzi8fbsMcCVxRYr0jE9I9RgAuvvz7hkfNKAJmKPo2RBhVHmLmDw4/exec';
 
 function diarioSaveDay() {
   if (!diarioActiveDay) return;
