@@ -2093,7 +2093,7 @@ function verificarEmail() {
       }
       _loginEmail = email;
       document.getElementById('login-step1').style.display = 'none';
-      if (t === 'sem_senha') {
+      if (t.indexOf('sem_senha') === 0) {
         // Primeiro acesso — criar senha
         document.getElementById('login-step2').style.display = 'block';
         setTimeout(function(){ document.getElementById('login-senha-nova').focus(); }, 100);
