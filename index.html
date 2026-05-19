@@ -74,8 +74,8 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 .page.active{display:block;animation:fadeUp 0.4s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
-.back-btn{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);cursor:pointer;margin-bottom:28px;transition:color 0.2s;background:none;border:none;font-family:'DM Sans',sans-serif;}
-.back-btn:hover{color:var(--text);}
+.back-btn{display:inline-flex;align-items:center;gap:7px;font-size:14px;color:#fff;cursor:pointer;margin-bottom:28px;transition:color 0.2s;background:none;border:none;font-family:'DM Sans',sans-serif;font-weight:600;}
+.back-btn:hover{color:var(--gold);}
 .ch{text-align:center;margin-bottom:36px;}
 .ch h2{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,36px);color:#fff;margin-bottom:7px;}
 .ch h2 em{color:var(--gold);font-style:italic;}
@@ -133,8 +133,8 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 .pbdg{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:16px;font-weight:500;margin-bottom:12px;}
 .bp{width:100%;background:var(--gold);color:var(--dark);border:none;border-radius:10px;padding:14px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:18px;}
 .bp:hover{background:var(--gold2);transform:translateY(-1px);}
-.bs{width:100%;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;margin-top:8px;}
-.bs:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+.bs{width:100%;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;margin-top:8px;font-weight:500;}
+.bs:hover{border-color:rgba(255,255,255,0.4);color:#fff;}
 .loader{width:40px;height:40px;border:3px solid rgba(232,160,32,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:600px){.tools-grid{grid-template-columns:1fr}.phases{grid-template-columns:1fr 1fr}.fg{grid-template-columns:1fr}.ag{grid-template-columns:1fr 1fr}.mg{grid-template-columns:repeat(2,1fr)}.ccard{padding:20px 14px}}
@@ -318,13 +318,42 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
     <div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;">Dr. Eduardo Medani · Nutricionista</div>
   </div>
   <div style="width:100%;max-width:380px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:20px;padding:28px 24px;">
-    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Acesse seu programa</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Digite o e-mail usado na compra para acessar seu conteúdo personalizado.</div>
-    <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Seu e-mail</div>
-    <input id="login-email" type="email" placeholder="seuemail@gmail.com" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')tentarLogin()">
-    <div id="login-msg" style="font-size:12px;margin-bottom:12px;line-height:1.5;min-height:18px;"></div>
-    <button id="login-btn" onclick="tentarLogin()" style="width:100%;background:var(--gold);color:#0E0D0C;border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Acessar</button>
-    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted);">Não comprou ainda? <a href="#" style="color:var(--gold);text-decoration:none;">Clique aqui</a></div>
+
+    <!-- ETAPA 1: E-mail -->
+    <div id="login-step1">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Acesse seu programa</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Digite o e-mail usado na compra para acessar seu conteúdo personalizado.</div>
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Seu e-mail</div>
+      <input id="login-email" type="email" placeholder="seuemail@gmail.com" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')verificarEmail()">
+      <div id="login-msg1" style="font-size:12px;margin-bottom:12px;line-height:1.5;min-height:18px;"></div>
+      <button id="login-btn1" onclick="verificarEmail()" style="width:100%;background:var(--gold);color:#0E0D0C;border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Continuar</button>
+      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted);">Não comprou ainda? <a href="#" style="color:var(--gold);text-decoration:none;">Clique aqui</a></div>
+    </div>
+
+    <!-- ETAPA 2: Criar senha (primeiro acesso) -->
+    <div id="login-step2" style="display:none;">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Criar sua senha</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Primeiro acesso! Crie uma senha para proteger sua conta.</div>
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Nova senha</div>
+      <input id="login-senha-nova" type="password" placeholder="Mínimo 6 caracteres" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')criarSenha()">
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Confirmar senha</div>
+      <input id="login-senha-conf" type="password" placeholder="Digite a senha novamente" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')criarSenha()">
+      <div id="login-msg2" style="font-size:12px;margin-bottom:12px;line-height:1.5;min-height:18px;"></div>
+      <button id="login-btn2" onclick="criarSenha()" style="width:100%;background:var(--gold);color:#0E0D0C;border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Criar senha e entrar</button>
+      <button onclick="voltarStep1()" style="width:100%;background:transparent;color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;margin-top:10px;">← Voltar</button>
+    </div>
+
+    <!-- ETAPA 3: Digitar senha (acessos seguintes) -->
+    <div id="login-step3" style="display:none;">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Bem-vinda de volta!</div>
+      <div id="login-nome-exibir" style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;"></div>
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">Sua senha</div>
+      <input id="login-senha" type="password" placeholder="Digite sua senha" style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <div id="login-msg3" style="font-size:12px;margin-bottom:12px;line-height:1.5;min-height:18px;"></div>
+      <button id="login-btn3" onclick="fazerLogin()" style="width:100%;background:var(--gold);color:#0E0D0C;border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Entrar</button>
+      <button onclick="voltarStep1()" style="width:100%;background:transparent;color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;margin-top:10px;">← Voltar</button>
+    </div>
+
   </div>
 </div>
 
@@ -488,7 +517,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
   <div class="footer">
     <div class="footer-logo">Ciclo Magro</div>
     <div class="footer-sub">Dr. Eduardo Medani - Nutricionista</div>
-    <button onclick="recalcularCiclo()" style="margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:auto;">
+    <button onclick="recalcularCiclo()" style="margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:13px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:auto;font-weight:500;">
       🔄 Recalcular meu ciclo
     </button>
   </div>
@@ -1921,7 +1950,7 @@ function irParaDieta() {
 }
 
 function enviarGoogleSheets(data) {
-  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbxk7QcSawR6lFIVzlkp1XKGiSKOpxEL0WBrzUZir57KHXOTk5seZqnq4zXY6Q-0GtUS/exec';
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbxbkmgS35RNbmBq-zeElbl5UbOlbCIiUdE7L4TRy6yYCxccvZfaz6pCjPugGqHXb7H9/exec';
   console.log('[CicloMagro] Enviando para planilha:', JSON.stringify(data));
   try {
     fetch(SHEET_URL, {
@@ -2028,37 +2057,119 @@ function recalcularCiclo() {
 function verificarAcesso(email) {
   return fetch(APPS_SCRIPT_URL + '?action=verificar&email=' + encodeURIComponent(email))
     .then(function(r) { return r.text(); })
-    .then(function(t) { return t.trim() === 'autorizado'; })
-    .catch(function() { return false; });
+    .then(function(t) { return t.trim(); })
+    .catch(function() { return 'erro'; });
 }
 
-function tentarLogin() {
+var _loginEmail = '';
+
+function voltarStep1() {
+  document.getElementById('login-step1').style.display = 'block';
+  document.getElementById('login-step2').style.display = 'none';
+  document.getElementById('login-step3').style.display = 'none';
+}
+
+function verificarEmail() {
   var email = (document.getElementById('login-email').value || '').trim().toLowerCase();
   if (!email) { alert('Digite seu e-mail.'); return; }
-  var btn = document.getElementById('login-btn');
-  var msg = document.getElementById('login-msg');
+  var btn = document.getElementById('login-btn1');
+  var msg = document.getElementById('login-msg1');
   btn.disabled = true;
   btn.textContent = 'Verificando...';
   msg.textContent = '';
-  verificarAcesso(email).then(function(ok) {
-    if (ok) {
-      try {
-        var saved = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}');
-        saved.email = email;
-        saved.acessoLiberado = true;
-        localStorage.setItem('ciclomagro_user', JSON.stringify(saved));
-      } catch(e) {}
-      var u = {};
-      try { u = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}'); } catch(e) {}
-      showPage(u.nome ? 'pg-home' : 'pg-cadastro');
-    } else {
-      msg.textContent = 'E-mail não encontrado. Verifique se usou o mesmo e-mail da compra ou entre em contato com o suporte.';
-      msg.style.color = '#E05C7A';
+
+  fetch(APPS_SCRIPT_URL + '?action=verificarEmail&email=' + encodeURIComponent(email))
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      t = t.trim();
       btn.disabled = false;
-      btn.textContent = 'Acessar';
-    }
-  });
+      btn.textContent = 'Continuar';
+      if (t === 'nao_encontrado' || t === 'bloqueado') {
+        msg.textContent = t === 'bloqueado'
+          ? 'Acesso bloqueado. Entre em contato com o suporte.'
+          : 'E-mail não encontrado. Verifique se usou o mesmo e-mail da compra.';
+        msg.style.color = '#E05C7A';
+        return;
+      }
+      _loginEmail = email;
+      document.getElementById('login-step1').style.display = 'none';
+      if (t === 'sem_senha') {
+        // Primeiro acesso — criar senha
+        document.getElementById('login-step2').style.display = 'block';
+        setTimeout(function(){ document.getElementById('login-senha-nova').focus(); }, 100);
+      } else {
+        // Já tem senha — pedir senha
+        var nome = t.split('|')[1] || '';
+        document.getElementById('login-nome-exibir').textContent = 'Digite sua senha para acessar' + (nome ? ', ' + nome.split(' ')[0] : '') + '.';
+        document.getElementById('login-step3').style.display = 'block';
+        setTimeout(function(){ document.getElementById('login-senha').focus(); }, 100);
+      }
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Continuar';
+      document.getElementById('login-msg1').textContent = 'Erro de conexão. Tente novamente.';
+      document.getElementById('login-msg1').style.color = '#E05C7A';
+    });
 }
+
+function criarSenha() {
+  var senha = document.getElementById('login-senha-nova').value || '';
+  var conf  = document.getElementById('login-senha-conf').value || '';
+  var msg   = document.getElementById('login-msg2');
+  if (senha.length < 6) { msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; msg.style.color='#E05C7A'; return; }
+  if (senha !== conf)   { msg.textContent = 'As senhas não coincidem.'; msg.style.color='#E05C7A'; return; }
+  var btn = document.getElementById('login-btn2');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+  fetch(APPS_SCRIPT_URL + '?action=criarSenha&email=' + encodeURIComponent(_loginEmail) + '&senha=' + encodeURIComponent(senha))
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      if (t.trim() === 'ok') {
+        liberarAcesso(_loginEmail);
+      } else {
+        msg.textContent = 'Erro ao salvar senha. Tente novamente.';
+        msg.style.color = '#E05C7A';
+        btn.disabled = false;
+        btn.textContent = 'Criar senha e entrar';
+      }
+    });
+}
+
+function fazerLogin() {
+  var senha = document.getElementById('login-senha').value || '';
+  var msg   = document.getElementById('login-msg3');
+  if (!senha) { msg.textContent = 'Digite sua senha.'; msg.style.color='#E05C7A'; return; }
+  var btn = document.getElementById('login-btn3');
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+  fetch(APPS_SCRIPT_URL + '?action=login&email=' + encodeURIComponent(_loginEmail) + '&senha=' + encodeURIComponent(senha))
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      if (t.trim() === 'ok') {
+        liberarAcesso(_loginEmail);
+      } else {
+        msg.textContent = 'Senha incorreta. Tente novamente.';
+        msg.style.color = '#E05C7A';
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    });
+}
+
+function liberarAcesso(email) {
+  try {
+    var saved = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}');
+    saved.email = email;
+    saved.acessoLiberado = true;
+    localStorage.setItem('ciclomagro_user', JSON.stringify(saved));
+  } catch(e) {}
+  var u = {};
+  try { u = JSON.parse(localStorage.getItem('ciclomagro_user') || '{}'); } catch(e) {}
+  showPage(u.nome ? 'pg-home' : 'pg-cadastro');
+}
+
+function tentarLogin() { verificarEmail(); }
 
 function checarAcessoInicial() {
   try {
@@ -2484,7 +2595,7 @@ function diarioClosePanel() {
 //  URL do Google Apps Script (cole aqui após publicar o script)
 //  Deploy > New deployment > Web app > Execute as: Me > Anyone
 // ─────────────────────────────────────────────────────────────
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk7QcSawR6lFIVzlkp1XKGiSKOpxEL0WBrzUZir57KHXOTk5seZqnq4zXY6Q-0GtUS/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbkmgS35RNbmBq-zeElbl5UbOlbCIiUdE7L4TRy6yYCxccvZfaz6pCjPugGqHXb7H9/exec';
 
 function diarioSaveDay() {
   if (!diarioActiveDay) return;
