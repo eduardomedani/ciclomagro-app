@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Gratuito — Ciclo Magro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #E8A020;
+    --rose: #E05C7A;
+    --green: #4CAF50;
+    --lav: #CE93D8;
+    --dark: #0E0D0C;
+    --card: #161412;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ece4;
+    --muted: #7a766e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background */
+  .bg-glow {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(232,160,32,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(224,92,122,0.05) 0%, transparent 60%);
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .logo em { color: var(--gold); font-style: italic; }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--rose));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Steps */
+  .step { display: none; animation: fadeIn 0.4s ease; }
+  .step.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .step-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  /* Option buttons */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .opt {
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+  }
+  .opt:hover { border-color: rgba(232,160,32,0.4); background: rgba(232,160,32,0.05); }
+  .opt.sel { border-color: var(--gold); background: rgba(232,160,32,0.08); }
+  .opt.sel .opt-check { background: var(--gold); border-color: var(--gold); }
+  .opt.sel .opt-check::after { opacity: 1; }
+  .opt-check {
+    width: 20px; height: 20px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .opt-check::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    background: var(--dark);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .opt-emoji { font-size: 18px; }
+  .opt-text { flex: 1; }
+  .opt-label { font-weight: 600; font-size: 14px; }
+  .opt-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Inputs */
+  .field { margin-bottom: 18px; }
+  .field-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: rgba(232,160,32,0.5); }
+  .field select option { background: #1a1714; color: var(--text); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Buttons */
+  .btn-primary {
+    width: 100%;
+    background: var(--gold);
+    color: #0E0D0C;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .btn-primary:hover { background: #f0aa28; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-back {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 12px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+  }
+  .btn-back:hover { color: var(--text); }
+
+  /* Resultado */
+  #resultado { display: none; animation: fadeIn 0.5s ease; }
+
+  .res-header {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(232,160,32,0.1), rgba(224,92,122,0.08));
+    border: 1px solid rgba(232,160,32,0.2);
+    border-radius: 20px;
+    padding: 28px 24px;
+    margin-bottom: 16px;
+  }
+  .res-ola {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .res-nome {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .res-fase-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-top: 8px;
+  }
+
+  .res-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .res-card-title {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  /* Calorias */
+  .kcal-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .kcal-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Macros */
+  .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .macro-item { text-align: center; }
+  .macro-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .macro-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .macro-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 6px;
+  }
+
+  /* Fase info */
+  .fase-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .fase-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .fase-item-label { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .fase-item-val { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  /* Recomendações */
+  .rec-list { list-style: none; }
+  .rec-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .rec-list li:last-child { border-bottom: none; }
+  .rec-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  /* CTA */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(232,160,32,0.12), rgba(224,92,122,0.08));
+    border: 1px solid rgba(232,160,32,0.3);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .cta-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .btn-cta {
+    display: block;
+    background: linear-gradient(135deg, var(--gold), #f0aa28);
+    color: #0E0D0C;
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,160,32,0.3); }
+  .cta-note { font-size: 11px; color: var(--muted); }
+
+  .divider {
+    width: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 16px auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Ciclo <em>Magro</em></div>
+    <div class="logo-sub">Dr. Eduardo Medani · Nutricionista</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:25%"></div></div>
+    <div class="progress-label" id="prog-label">Etapa 1 de 3</div>
+  </div>
+
+  <!-- ETAPA 1: Ciclo -->
+  <div class="step active" id="s1">
+    <div class="step-tag">Etapa 1 — Seu Ciclo</div>
+    <div class="step-title">Vamos descobrir sua fase atual</div>
+    <div class="step-sub">Preencha as informações do seu ciclo menstrual para calcularmos em qual fase você está hoje.</div>
+
+    <div class="field">
+      <label class="field-label">Primeiro dia da sua última menstruação</label>
+      <input type="date" id="s1-data" max="">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Duração do ciclo (dias)</label>
+        <select id="s1-ciclo">
+          <option value="24">24 dias</option>
+          <option value="25">25 dias</option>
+          <option value="26">26 dias</option>
+          <option value="27">27 dias</option>
+          <option value="28" selected>28 dias (média)</option>
+          <option value="29">29 dias</option>
+          <option value="30">30 dias</option>
+          <option value="31">31 dias</option>
+          <option value="32">32 dias</option>
+          <option value="33">33 dias</option>
+          <option value="34">34 dias</option>
+          <option value="35">35 dias</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Duração da menstruação</label>
+        <select id="s1-mens">
+          <option value="3">3 dias</option>
+          <option value="4">4 dias</option>
+          <option value="5" selected>5 dias</option>
+          <option value="6">6 dias</option>
+          <option value="7">7 dias</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goS2()">Continuar →</button>
+  </div>
+
+  <!-- ETAPA 2: Dados pessoais -->
+  <div class="step" id="s2">
+    <div class="step-tag">Etapa 2 — Seus Dados</div>
+    <div class="step-title">Calculando suas calorias ideais</div>
+    <div class="step-sub">Esses dados são usados para calcular seu gasto calórico e distribuição de macronutrientes.</div>
+
+    <div class="field">
+      <label class="field-label">Seu nome</label>
+      <input type="text" id="s2-nome" placeholder="Como posso te chamar?">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Idade</label>
+        <input type="number" id="s2-idade" placeholder="Ex: 28" min="16" max="65">
+      </div>
+      <div class="field">
+        <label class="field-label">Peso (kg)</label>
+        <input type="number" id="s2-peso" placeholder="Ex: 65" min="40" max="150" step="0.1">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Altura (cm)</label>
+      <input type="number" id="s2-altura" placeholder="Ex: 165" min="140" max="200">
+    </div>
+    <div class="field">
+      <label class="field-label">Nível de atividade física</label>
+      <select id="s2-ativ">
+        <option value="1.2">🧍 Sedentária — pouca ou nenhuma atividade</option>
+        <option value="1.375">🚶 Levemente ativa — 1 a 3x por semana</option>
+        <option value="1.55" selected>🏃 Moderadamente ativa — 3 a 5x por semana</option>
+        <option value="1.725">💪 Muito ativa — 6 a 7x por semana</option>
+        <option value="1.9">🔥 Extremamente ativa — treinos intensos diários</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="goS3()">Continuar →</button>
+    <button class="btn-back" onclick="goStep(1)">← Voltar</button>
+  </div>
+
+  <!-- ETAPA 3: Objetivo + Sentimento -->
+  <div class="step" id="s3">
+    <div class="step-tag">Etapa 3 — Seu Objetivo</div>
+    <div class="step-title">Qual é o seu principal objetivo?</div>
+    <div class="step-sub">Isso personaliza suas recomendações de acordo com o que você mais precisa agora.</div>
+
+    <div class="options" id="opts-obj">
+      <div class="opt" onclick="selOpt(this,'obj','emagrecer')">
+        <div class="opt-emoji">⚡</div>
+        <div class="opt-text">
+          <div class="opt-label">Emagrecer</div>
+          <div class="opt-desc">Perder gordura de forma saudável e sustentável</div>
+        </div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'obj','inchaco')">
+        <div class="opt-emoji">💧</div>
+        <div class="opt-text">
+          <div class="opt-label">Reduzir inchaço</div>
+          <div class="opt-desc">Diminuir retenção hídrica e sensação de peso</div>
+        </div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'obj','energia')">
+        <div class="opt-emoji">🌿</div>
+        <div class="opt-text">
+          <div class="opt-label">Ter mais energia</div>
+          <div class="opt-desc">Combater cansaço e melhorar disposição</div>
+        </div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'obj','hormonios')">
+        <div class="opt-emoji">✦</div>
+        <div class="opt-text">
+          <div class="opt-label">Equilibrar hormônios</div>
+          <div class="opt-desc">Regular o ciclo e reduzir sintomas hormonais</div>
+        </div>
+        <div class="opt-check"></div>
+      </div>
+    </div>
+
+    <div class="step-title" style="font-size:20px;margin-bottom:8px;">Como você se sente hoje?</div>
+    <div class="step-sub" style="margin-bottom:16px;">Seu estado atual também influencia as recomendações.</div>
+
+    <div class="options" id="opts-feel">
+      <div class="opt" onclick="selOpt(this,'feel','energia')">
+        <div class="opt-emoji">⚡</div>
+        <div class="opt-text"><div class="opt-label">Com energia</div></div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'feel','cansada')">
+        <div class="opt-emoji">😴</div>
+        <div class="opt-text"><div class="opt-label">Cansada</div></div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'feel','ansiosa')">
+        <div class="opt-emoji">😰</div>
+        <div class="opt-text"><div class="opt-label">Ansiosa</div></div>
+        <div class="opt-check"></div>
+      </div>
+      <div class="opt" onclick="selOpt(this,'feel','inchada')">
+        <div class="opt-emoji">💧</div>
+        <div class="opt-text"><div class="opt-label">Inchada</div></div>
+        <div class="opt-check"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="gerarDiagnostico()">✦ Ver meu diagnóstico grátis</button>
+    <button class="btn-back" onclick="goStep(2)">← Voltar</button>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="resultado">
+
+    <div class="res-header" id="res-header">
+      <div class="res-ola">Seu diagnóstico personalizado</div>
+      <div class="res-nome" id="res-nome"></div>
+      <div class="divider"></div>
+      <div style="font-size:13px;color:var(--muted);">Hoje você está na</div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin:4px 0;" id="res-fase-nome"></div>
+      <div class="res-fase-tag" id="res-fase-tag"></div>
+    </div>
+
+    <!-- Calorias -->
+    <div class="res-card">
+      <div class="res-card-title">⚡ Meta calórica diária</div>
+      <div class="kcal-big" id="res-kcal"></div>
+      <div class="kcal-label" id="res-kcal-label"></div>
+    </div>
+
+    <!-- Macros -->
+    <div class="res-card">
+      <div class="res-card-title">🥗 Distribuição de macronutrientes</div>
+      <div class="macros">
+        <div class="macro-item">
+          <div class="macro-val" style="color:#E05C7A;" id="res-prot"></div>
+          <div class="macro-label">Proteínas</div>
+          <div class="macro-bar" style="background:#E05C7A;" id="res-prot-bar"></div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-val" style="color:#FFD54F;" id="res-carb"></div>
+          <div class="macro-label">Carboidratos</div>
+          <div class="macro-bar" style="background:#FFD54F;" id="res-carb-bar"></div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-val" style="color:#CE93D8;" id="res-gord"></div>
+          <div class="macro-label">Gorduras</div>
+          <div class="macro-bar" style="background:#CE93D8;" id="res-gord-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase -->
+    <div class="res-card">
+      <div class="res-card-title">🌸 Informações da fase</div>
+      <div class="fase-info">
+        <div class="fase-item">
+          <div class="fase-item-label">Dia do ciclo</div>
+          <div class="fase-item-val" id="res-dia"></div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-item-label">Energia esperada</div>
+          <div class="fase-item-val" id="res-energia"></div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-item-label">Fome esperada</div>
+          <div class="fase-item-val" id="res-fome"></div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-item-label">Retenção hídrica</div>
+          <div class="fase-item-val" id="res-retencao"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recomendações -->
+    <div class="res-card">
+      <div class="res-card-title">✦ Recomendações para sua fase</div>
+      <ul class="rec-list" id="res-recs"></ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <div class="cta-title">Quer sua dieta completa personalizada?</div>
+      <div class="cta-sub">Esse é só um aperitivo! No Ciclo Magro você recebe dietas completas para cada fase do seu ciclo, com substituições automáticas e acompanhamento personalizado.</div>
+      <a href="https://ciclomagro-eduardomedani.netlify.app/" class="btn-cta" target="_blank">✦ Quero minha dieta completa</a>
+      <div class="cta-note">Programa completo do Dr. Eduardo Medani · Nutricionista</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+var dados = {};
+
+// Set max date
+document.getElementById('s1-data').setAttribute('max', new Date().toISOString().split('T')[0]);
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+  var s = document.getElementById('s' + n);
+  if (s) s.classList.add('active');
+  var pcts = {1:25, 2:50, 3:75};
+  document.getElementById('prog').style.width = (pcts[n] || 25) + '%';
+  document.getElementById('prog-label').textContent = 'Etapa ' + n + ' de 3';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goS2() {
+  var data = document.getElementById('s1-data').value;
+  if (!data) { alert('Por favor, informe a data da sua última menstruação.'); return; }
+  dados.dataMens  = data;
+  dados.cicloDias = parseInt(document.getElementById('s1-ciclo').value);
+  dados.mensDias  = parseInt(document.getElementById('s1-mens').value);
+  goStep(2);
+}
+
+function goS3() {
+  var nome   = document.getElementById('s2-nome').value.trim();
+  var idade  = parseInt(document.getElementById('s2-idade').value);
+  var peso   = parseFloat(document.getElementById('s2-peso').value);
+  var altura = parseInt(document.getElementById('s2-altura').value);
+  if (!nome)        { alert('Digite seu nome.'); return; }
+  if (!idade || idade < 16 || idade > 65) { alert('Informe uma idade válida.'); return; }
+  if (!peso  || peso  < 40 || peso  > 150){ alert('Informe um peso válido.'); return; }
+  if (!altura|| altura< 140|| altura> 200){ alert('Informe uma altura válida.'); return; }
+  dados.nome   = nome;
+  dados.idade  = idade;
+  dados.peso   = peso;
+  dados.altura = altura;
+  dados.ativ   = parseFloat(document.getElementById('s2-ativ').value);
+  goStep(3);
+}
+
+function selOpt(el, grupo, val) {
+  document.querySelectorAll('#opts-' + grupo + ' .opt').forEach(function(o){ o.classList.remove('sel'); });
+  el.classList.add('sel');
+  dados[grupo] = val;
+}
+
+// Calcular fase
+function calcFase(dataMens, cicloDias, mensDias) {
+  var hoje  = new Date();
+  var mens  = new Date(dataMens);
+  var diff  = Math.floor((hoje - mens) / 86400000);
+  var dia   = (diff % cicloDias) + 1;
+  if (dia <= 0) dia += cicloDias;
+
+  var fases = [
+    { nome: 'Menstruação',    dias: 'Dias 1-' + mensDias,           cor: '#E05C7A', emoji: '🌺',
+      energia: 'Baixa', fome: 'Moderada', retencao: 'Alta',
+      pP:0.30, pC:0.45, pG:0.25, def: -100,
+      recs: ['Priorize alimentos ricos em ferro como carnes vermelhas magras e folhas escuras', 'Consuma alimentos antiinflamatórios como gengibre, cúrcuma e ômega-3', 'Reduza sal, açúcar e alimentos ultraprocessados para diminuir inchaço', 'Priorize refeições quentes e reconfortantes — sopas, caldos e chás', 'Respeite seu corpo — esse é o momento de descanso e renovação'] },
+    { nome: 'Fase Folicular', dias: 'Dias ' + (mensDias+1) + '-13', cor: '#FFD54F', emoji: '🌱',
+      energia: 'Alta', fome: 'Baixa', retencao: 'Mínima',
+      pP:0.30, pC:0.50, pG:0.20, def: -300,
+      recs: ['Aproveite a energia elevada para treinos mais intensos', 'Carboidratos complexos são seus aliados — aveia, batata doce, arroz integral', 'Proteínas magras ajudam a preservar massa muscular nessa fase', 'Hidrate-se bem — mínimo 2 litros de água por dia', 'Ótimo momento para iniciar novos hábitos alimentares'] },
+    { nome: 'Fase Ovulatória', dias: 'Dias 14-16',                  cor: '#4CAF50', emoji: '🌿',
+      energia: 'Máxima', fome: 'Mínima', retencao: 'Baixa',
+      pP:0.30, pC:0.50, pG:0.20, def: -300,
+      recs: ['Seu metabolismo está no pico — excelente para déficit calórico', 'Consuma alimentos ricos em zinco como sementes de abóbora e frutos do mar', 'Antioxidantes como frutas vermelhas e vegetais coloridos são essenciais', 'Evite excessos — mesmo com baixa fome, mantenha regularidade nas refeições', 'Fibras ajudam a manter saciedade durante essa fase de menor apetite'] },
+    { nome: 'Fase Lútea',     dias: 'Dias 17-' + cicloDias,        cor: '#CE93D8', emoji: '🌙',
+      energia: 'Moderada', fome: 'Alta', retencao: 'Moderada',
+      pP:0.30, pC:0.45, pG:0.25, def: -150,
+      recs: ['Magnésio reduz TPM — consuma chocolate amargo, nozes e sementes', 'Evite cafeína em excesso — pode intensificar ansiedade e inchaço', 'Carboidratos complexos ajudam a regular a serotonina e melhorar o humor', 'Pequenas refeições frequentes ajudam a controlar a fome aumentada', 'Vitamina B6 (banana, frango, batata) auxilia no equilíbrio hormonal'] }
+  ];
+
+  var fase;
+  if (dia <= mensDias)       fase = fases[0];
+  else if (dia <= 13)        fase = fases[1];
+  else if (dia <= 16)        fase = fases[2];
+  else                       fase = fases[3];
+
+  return { fase: fase, dia: dia };
+}
+
+// Calcular TMB
+function calcTMB(peso, altura, idade, ativ, objetivo) {
+  var tmb = 655.1 + (9.563 * peso) + (1.85 * altura) - (4.676 * idade);
+  var tdee = tmb * ativ;
+  var def = { emagrecer: -400, inchaco: -200, energia: 0, hormonios: -100 };
+  var kcal = Math.round(tdee + (def[objetivo] || -300));
+  return Math.max(kcal, 1200);
+}
+
+function gerarDiagnostico() {
+  if (!dados.obj)  { alert('Selecione seu objetivo principal.'); return; }
+  if (!dados.feel) { alert('Selecione como você se sente hoje.'); return; }
+
+  var res   = calcFase(dados.dataMens, dados.cicloDias, dados.mensDias);
+  var fase  = res.fase;
+  var dia   = res.dia;
+  var kcal  = calcTMB(dados.peso, dados.altura, dados.idade, dados.ativ, dados.obj);
+
+  var prot = Math.round((kcal * fase.pP) / 4);
+  var carb = Math.round((kcal * fase.pC) / 4);
+  var gord = Math.round((kcal * fase.pG) / 9);
+
+  var objLabel = { emagrecer:'Emagrecimento', inchaco:'Redução de inchaço', energia:'Mais energia', hormonios:'Equilíbrio hormonal' };
+
+  // Preenche resultado
+  document.getElementById('res-nome').textContent = dados.nome.split(' ')[0] + '!';
+  document.getElementById('res-fase-nome').textContent = fase.nome;
+  document.getElementById('res-fase-nome').style.color = fase.cor;
+  document.getElementById('res-fase-tag').textContent = fase.emoji + ' ' + fase.dias;
+  document.getElementById('res-fase-tag').style.background = fase.cor + '22';
+  document.getElementById('res-fase-tag').style.color = fase.cor;
+  document.getElementById('res-fase-tag').style.border = '1px solid ' + fase.cor + '44';
+
+  document.getElementById('res-kcal').textContent = kcal.toLocaleString('pt-BR');
+  document.getElementById('res-kcal-label').textContent = 'kcal/dia para ' + (objLabel[dados.obj] || 'seu objetivo').toLowerCase();
+
+  document.getElementById('res-prot').textContent = prot + 'g';
+  document.getElementById('res-carb').textContent = carb + 'g';
+  document.getElementById('res-gord').textContent = gord + 'g';
+
+  document.getElementById('res-dia').textContent = 'Dia ' + dia + ' de ' + dados.cicloDias;
+  document.getElementById('res-energia').textContent = fase.energia;
+  document.getElementById('res-fome').textContent = fase.fome;
+  document.getElementById('res-retencao').textContent = fase.retencao;
+
+  var recsHtml = '';
+  fase.recs.forEach(function(r) {
+    recsHtml += '<li><div class="rec-dot" style="background:' + fase.cor + '"></div>' + r + '</li>';
+  });
+  document.getElementById('res-recs').innerHTML = recsHtml;
+
+  // Esconde steps, mostra resultado
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('resultado').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
