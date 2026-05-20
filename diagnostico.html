@@ -158,7 +158,7 @@
   .opt-emoji { font-size: 18px; }
   .opt-text { flex: 1; }
   .opt-label { font-weight: 600; font-size: 14px; }
-  .opt-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .opt-desc { font-size: 11px; color: #a09a90; margin-top: 2px; }
 
   /* Inputs */
   .field { margin-bottom: 18px; }
@@ -207,18 +207,21 @@
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .btn-back {
     background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
     font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     margin-top: 12px;
     display: block;
     width: 100%;
     text-align: center;
-    padding: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    transition: all 0.2s;
   }
-  .btn-back:hover { color: var(--text); }
+  .btn-back:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); }
 
   /* Resultado */
   #resultado { display: none; animation: fadeIn 0.5s ease; }
@@ -273,12 +276,13 @@
   /* Calorias */
   .kcal-big {
     font-family: 'Playfair Display', serif;
-    font-size: 48px;
+    font-size: 56px;
     font-weight: 900;
     color: var(--gold);
     line-height: 1;
+    text-align: center;
   }
-  .kcal-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kcal-label { font-size: 13px; color: var(--muted); margin-top: 6px; text-align: center; }
 
   /* Macros */
   .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -550,46 +554,17 @@
   <div id="resultado">
 
     <div class="res-header" id="res-header">
-      <div class="res-ola">Seu diagnóstico personalizado</div>
+      <div class="res-ola">Calculamos tudo para você,</div>
       <div class="res-nome" id="res-nome"></div>
       <div class="divider"></div>
-      <div style="font-size:13px;color:var(--muted);">Hoje você está na</div>
+      <div style="font-size:13px;color:var(--muted);">Hoje, no dia <strong id="res-dia-header" style="color:var(--text)"></strong> do seu ciclo, você está na</div>
       <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin:4px 0;" id="res-fase-nome"></div>
       <div class="res-fase-tag" id="res-fase-tag"></div>
     </div>
 
-    <!-- Calorias -->
-    <div class="res-card">
-      <div class="res-card-title">⚡ Meta calórica diária</div>
-      <div class="kcal-big" id="res-kcal"></div>
-      <div class="kcal-label" id="res-kcal-label"></div>
-    </div>
-
-    <!-- Macros -->
-    <div class="res-card">
-      <div class="res-card-title">🥗 Distribuição de macronutrientes</div>
-      <div class="macros">
-        <div class="macro-item">
-          <div class="macro-val" style="color:#E05C7A;" id="res-prot"></div>
-          <div class="macro-label">Proteínas</div>
-          <div class="macro-bar" style="background:#E05C7A;" id="res-prot-bar"></div>
-        </div>
-        <div class="macro-item">
-          <div class="macro-val" style="color:#FFD54F;" id="res-carb"></div>
-          <div class="macro-label">Carboidratos</div>
-          <div class="macro-bar" style="background:#FFD54F;" id="res-carb-bar"></div>
-        </div>
-        <div class="macro-item">
-          <div class="macro-val" style="color:#CE93D8;" id="res-gord"></div>
-          <div class="macro-label">Gorduras</div>
-          <div class="macro-bar" style="background:#CE93D8;" id="res-gord-bar"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- Fase -->
     <div class="res-card">
-      <div class="res-card-title">🌸 Informações da fase</div>
+      <div class="res-card-title">🌸 O que sua fase revela sobre você agora</div>
       <div class="fase-info">
         <div class="fase-item">
           <div class="fase-item-label">Dia do ciclo</div>
@@ -612,8 +587,37 @@
 
     <!-- Recomendações -->
     <div class="res-card">
-      <div class="res-card-title">✦ Recomendações para sua fase</div>
+      <div class="res-card-title">✦ Isso explica como você está se sentindo</div>
       <ul class="rec-list" id="res-recs"></ul>
+    </div>
+
+    <!-- Calorias -->
+    <div class="res-card">
+      <div class="res-card-title" style="text-align:center;">⚡ Sua meta calórica diária</div>
+      <div class="kcal-big" id="res-kcal"></div>
+      <div class="kcal-label" id="res-kcal-label"></div>
+    </div>
+
+    <!-- Macros -->
+    <div class="res-card">
+      <div class="res-card-title">🥗 Distribuição de macronutrientes</div>
+      <div class="macros">
+        <div class="macro-item">
+          <div class="macro-val" style="color:#E05C7A;" id="res-prot"></div>
+          <div class="macro-label">Proteínas</div>
+          <div class="macro-bar" style="background:#E05C7A;" id="res-prot-bar"></div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-val" style="color:#FFD54F;" id="res-carb"></div>
+          <div class="macro-label">Carboidratos</div>
+          <div class="macro-bar" style="background:#FFD54F;" id="res-carb-bar"></div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-val" style="color:#CE93D8;" id="res-gord"></div>
+          <div class="macro-label">Gorduras</div>
+          <div class="macro-bar" style="background:#CE93D8;"></div>
+        </div>
+      </div>
     </div>
 
     <!-- CTA -->
@@ -688,19 +692,47 @@ function calcFase(dataMens, cicloDias, mensDias) {
     { nome: 'Menstruação',    dias: 'Dias 1-' + mensDias,           cor: '#E05C7A', emoji: '🌺',
       energia: 'Baixa', fome: 'Moderada', retencao: 'Alta',
       pP:0.30, pC:0.45, pG:0.25, def: -100,
-      recs: ['Priorize alimentos ricos em ferro como carnes vermelhas magras e folhas escuras', 'Consuma alimentos antiinflamatórios como gengibre, cúrcuma e ômega-3', 'Reduza sal, açúcar e alimentos ultraprocessados para diminuir inchaço', 'Priorize refeições quentes e reconfortantes — sopas, caldos e chás', 'Respeite seu corpo — esse é o momento de descanso e renovação'] },
+      recs: [
+        'Seu corpo está perdendo ferro agora — é por isso que você sente aquele cansaço que parece sem motivo. Carnes vermelhas magras, feijão e folhas escuras são essenciais nesses dias.',
+        'A inflamação está naturalmente elevada. Gengibre, cúrcuma e alimentos ricos em ômega-3 como sardinha e chia ajudam a aliviar as cólicas e o desconforto.',
+        'O sal é seu inimigo nessa fase — ele retém água e piora o inchaço que você já está sentindo. Reduza ao máximo por 3-4 dias.',
+        'Seu corpo pede calor e conforto — sopas, caldos e chás quentes não são frescura, são exatamente o que ele precisa agora.',
+        'Esse é o momento de descansar sem culpa. Treinos leves como caminhada e yoga são suficientes — forçar o corpo agora só piora os sintomas.'
+      ]
+    },
     { nome: 'Fase Folicular', dias: 'Dias ' + (mensDias+1) + '-13', cor: '#FFD54F', emoji: '🌱',
       energia: 'Alta', fome: 'Baixa', retencao: 'Mínima',
       pP:0.30, pC:0.50, pG:0.20, def: -300,
-      recs: ['Aproveite a energia elevada para treinos mais intensos', 'Carboidratos complexos são seus aliados — aveia, batata doce, arroz integral', 'Proteínas magras ajudam a preservar massa muscular nessa fase', 'Hidrate-se bem — mínimo 2 litros de água por dia', 'Ótimo momento para iniciar novos hábitos alimentares'] },
+      recs: [
+        'Sabe aquela sensação de leveza e disposição que às vezes aparece do nada? É o estrogênio subindo — e ele naturalmente inibe a fome. Aproveite para fazer o déficit calórico sem sofrimento.',
+        'Carboidratos complexos são seus aliados agora — aveia, batata doce e arroz integral dão energia sustentada para os treinos mais intensos que seu corpo pede.',
+        'É a melhor fase para iniciar novos hábitos. Seu cérebro está mais receptivo a mudanças — se vai começar uma dieta ou rotina nova, comece agora.',
+        'Proteínas magras como frango, peixe e ovos preservam sua massa muscular enquanto você queima gordura com mais facilidade.',
+        'Seu metabolismo está acelerado e a retenção está mínima — o número na balança tende a cair aqui. Não desperdice essa janela.'
+      ]
+    },
     { nome: 'Fase Ovulatória', dias: 'Dias 14-16',                  cor: '#4CAF50', emoji: '🌿',
       energia: 'Máxima', fome: 'Mínima', retencao: 'Baixa',
       pP:0.30, pC:0.50, pG:0.20, def: -300,
-      recs: ['Seu metabolismo está no pico — excelente para déficit calórico', 'Consuma alimentos ricos em zinco como sementes de abóbora e frutos do mar', 'Antioxidantes como frutas vermelhas e vegetais coloridos são essenciais', 'Evite excessos — mesmo com baixa fome, mantenha regularidade nas refeições', 'Fibras ajudam a manter saciedade durante essa fase de menor apetite'] },
+      recs: [
+        'Você está no pico do mês — energia máxima, fome mínima, metabolismo acelerado. É agora que o déficit calórico funciona melhor sem que você sinta fome.',
+        'Zinco é o mineral da ovulação — sementes de abóbora, frutos do mar e carne vermelha magra apoiam esse processo hormonal.',
+        'Antioxidantes como frutas vermelhas, brócolis e cenoura protegem os óvulos e combatem inflamação. Capriche nos vegetais coloridos.',
+        'Mesmo com pouca fome, não pule refeições — manter a regularidade evita queda de açúcar e preserva o metabolismo alto.',
+        'Sua sociabilidade e autoconfiança estão no máximo. Aproveite para fazer fotos de progresso — você vai estar no melhor momento visual do mês.'
+      ]
+    },
     { nome: 'Fase Lútea',     dias: 'Dias 17-' + cicloDias,        cor: '#CE93D8', emoji: '🌙',
       energia: 'Moderada', fome: 'Alta', retencao: 'Moderada',
       pP:0.30, pC:0.45, pG:0.25, def: -150,
-      recs: ['Magnésio reduz TPM — consuma chocolate amargo, nozes e sementes', 'Evite cafeína em excesso — pode intensificar ansiedade e inchaço', 'Carboidratos complexos ajudam a regular a serotonina e melhorar o humor', 'Pequenas refeições frequentes ajudam a controlar a fome aumentada', 'Vitamina B6 (banana, frango, batata) auxilia no equilíbrio hormonal'] }
+      recs: [
+        'Aquela vontade incontrolável de comer doce não é fraqueza — é a progesterona pedindo serotonina. Chocolate amargo 70%+ satisfaz esse pedido sem sabotar sua dieta.',
+        'A fome aumentada que você sente agora é real e tem causa hormonal. Pequenas refeições a cada 3 horas evitam os picos de fome que levam a excessos.',
+        'Magnésio é o nutriente da TPM — nozes, sementes, abacate e folhas escuras reduzem ansiedade, inchaço e irritabilidade de forma natural.',
+        'Cafeína em excesso agora intensifica a ansiedade e o inchaço. Troque o terceiro café por chá de camomila ou melissa — você vai sentir a diferença.',
+        'O inchaço que aparece nesses dias é retenção hídrica, não gordura — beber mais água (não menos) ajuda o corpo a eliminar esse excesso.'
+      ]
+    }
   ];
 
   var fase;
@@ -738,6 +770,7 @@ function gerarDiagnostico() {
 
   // Preenche resultado
   document.getElementById('res-nome').textContent = dados.nome.split(' ')[0] + '!';
+  document.getElementById('res-dia-header').textContent = dia;
   document.getElementById('res-fase-nome').textContent = fase.nome;
   document.getElementById('res-fase-nome').style.color = fase.cor;
   document.getElementById('res-fase-tag').textContent = fase.emoji + ' ' + fase.dias;
@@ -746,7 +779,8 @@ function gerarDiagnostico() {
   document.getElementById('res-fase-tag').style.border = '1px solid ' + fase.cor + '44';
 
   document.getElementById('res-kcal').textContent = kcal.toLocaleString('pt-BR');
-  document.getElementById('res-kcal-label').textContent = 'kcal/dia para ' + (objLabel[dados.obj] || 'seu objetivo').toLowerCase();
+  var objTexto = { emagrecer: 'emagrecer com saúde', inchaco: 'reduzir o inchaço', energia: 'ter mais energia', hormonios: 'equilibrar seus hormônios' };
+  document.getElementById('res-kcal-label').textContent = 'kcal/dia — calculado para ' + (objTexto[dados.obj] || 'seu objetivo') + ' na sua fase atual';
 
   document.getElementById('res-prot').textContent = prot + 'g';
   document.getElementById('res-carb').textContent = carb + 'g';
